@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 
+const cloudinary = require("../middleware/cloudinary");
+const multer = require("../middleware/multer-config");
+const auth = require('../middleware/auth');
+
+
 exports.seeProfile = (req, res, next) => {
   connexion.query(`SELECT userName, firstname, lastname, serviceName, imageUrl, email, aboutMe FROM users WHERE userName = ?`, [req.params.userName], (error, result)=>{
     if(error) {res.status(500).send(error.sqlMessage)}
@@ -65,45 +70,57 @@ exports.getNotifications = (req, res, next) => {
   })  
 }
 
-exports.loadPicture = (req, res, next) => {
-  picObject = { ...JSON.parse(req.body.datas) };
-  const userName =  picObject.userName;
-  let imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-  let filename = '';
-  connexion.query(`SELECT imageUrl FROM users WHERE userName="${userName}"`, (error, result) => {
+exports.loadPicture = (req, res, next) => {  
+  multer.single("image") (req, res, () => {
+    auth (req, res, async () => {
+    console.log(req.body.datas)
+    picObject = { ...JSON.parse(req.body.datas) };
+    const userName =  picObject.userName;
+    
+    try {
+      const result = await cloudinary.uploader.upload(req.file.path, {folder:"SharePlace-Evo", width: 400, height: 400, crop: "fill"});
+      /*background: "black", crop: "pad"*/
+      
+      let imageUrl = result.secure_url;
+      connexion.query(`SELECT imageUrl FROM users WHERE userName="${userName}"`, (error, result) => {
         if(error) {res.status(500).send(error.sqlMessage)}
         else {
           if (result[0].imageUrl !== null) {
-          filename = result[0].imageUrl.split('/images/')[1];
+          idCloud = 'SharePlace-Evo/' + result[0].imageUrl.split('/SharePlace-Evo/')[1].split('.')[0];
           }
           connexion.query(`UPDATE users SET imageUrl="${imageUrl}" WHERE userName="${userName}"`, (error, result) => {
                 if(error) {res.status(500).send(error.sqlMessage);}
                 else {
-                  if (filename !== 'default.png') {
-                  fs.unlink(`images/${filename}`, () => {});
+                  if (idCloud !== 'SharePlace-Evo/default') {
+                    cloudinary.uploader.destroy(idCloud);
                   }
                   res.status(200).send({message:"Update done"});
                 }
               });
         }
-      });  
+      });
+    } 
+    catch (error) {console.log(error);}
+  })
+  })
 }
 
 exports.deletePicture = (req, res, next) => {
   const userName =  req.body.userName;
-  let imageUrl = `${req.protocol}://${req.get('host')}/images/default.png`;
-  let filename = '';
+  const imageUrl = "https://res.cloudinary.com/cbpicstore/image/upload/v1615060643/SharePlace-Evo/default.png";
+  
   connexion.query(`SELECT imageUrl FROM users WHERE userName="${userName}"`, (error, result) => {
         if(error) {res.status(500).send(error.sqlMessage)}
         else {
           if (result[0].imageUrl !== null) {
-          filename = result[0].imageUrl.split('/images/')[1];
+            idCloud = 'SharePlace-Evo/' + result[0].imageUrl.split('/SharePlace-Evo/')[1].split('.')[0];
+
           }
           connexion.query(`UPDATE users SET imageUrl="${imageUrl}" WHERE userName="${userName}"`, (error, result) => {
                 if(error) {res.status(500).send(error.sqlMessage);}
                 else {
-                  if (filename !== 'default.png') {
-                  fs.unlink(`images/${filename}`, () => {});
+                  if (idCloud !== 'default.png') {
+                    cloudinary.uploader.destroy(idCloud);
                   }
                   res.status(200).send({message:"Update done"});
                 }

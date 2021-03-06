@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const path = require('path');
 //const cors = require('cors');
 
+const multer = require('./middleware/multer-config');
+
+
 const userRoutes = require('./routes/user');
 const publicationsRoutes = require('./routes/publication');
 const commentsRoutes = require('./routes/comment');
@@ -20,6 +23,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     next();
   });
+
 
 app.use(bodyParser.json());
 

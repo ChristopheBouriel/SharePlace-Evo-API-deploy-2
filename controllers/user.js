@@ -43,11 +43,13 @@ exports.login = (req, res, next) => {
         if (!user[0]) {
           return res.status(400).send({ error: 'Utilisateur non trouvé !' });
         };
+        
         bcrypt.compare(req.body.userPassword, user[0]['userPassword'])
           .then(valid => {
             if (!valid) {
               return res.status(400).send({ error: 'Mot de passe incorrect !' });
             }
+            console.log(user[0])
             let tokAdmin;
             if (user[0].isMod === 1) {
                 tokAdmin = "moderator";                

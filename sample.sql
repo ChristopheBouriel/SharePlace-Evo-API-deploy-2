@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS shareplacevolution.users (
     lastname VARCHAR(40) NOT NULL, 
     serviceName VARCHAR(30) NOT NULL, 
     email VARCHAR(40),
-    imageUrl VARCHAR(255) DEFAULT 'http://localhost:3000/images/default.png', 
+    imageUrl VARCHAR(255) DEFAULT 'https://res.cloudinary.com/cbpicstore/image/upload/v1615060643/SharePlace-Evo/default.png', 
     aboutMe TEXT, 
     isMod BOOLEAN DEFAULT 0, 
     date_logout DATETIME, 

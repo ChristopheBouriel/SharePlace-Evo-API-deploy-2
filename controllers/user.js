@@ -87,7 +87,7 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.modifyPassword = (req, res, next) => {
   let password 
-  bcrypt.hash(req.body.userPassword, 10)
+  bcrypt.hash(req.body.password, 10)
   .then(hash => {
     password = hash
     const userName = req.body.userName;

@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-    const regex1 = RegExp(/^[a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F '-]{2,30}$/);
+    const regex1 = RegExp(/^[a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F '-]{2,40}$/);
     
     try {  
         if (!req.body.userName) {

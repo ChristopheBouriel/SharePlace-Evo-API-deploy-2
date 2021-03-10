@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-    const regex = RegExp(/^[A-Z\u00C0-\u00D6\u00D8-\u00DF]{0,1}[0-9a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F !?:"(),\n\.'-]{0,4000}$/);
+    const regex = RegExp(/^((\p{Emoji_Presentation}|\p{ExtPict})|[0-9a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\n \x22!?:(),\.'-]){1,4000}$/gu);
 
     try {  
             const content = req.body.content;

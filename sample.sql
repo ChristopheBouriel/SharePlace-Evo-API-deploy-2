@@ -1,4 +1,4 @@
-CREATE DATABASE shareplacevolution CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE shareplacevolution DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE IF NOT EXISTS shareplacevolution.users ( 
@@ -11,19 +11,19 @@ CREATE TABLE IF NOT EXISTS shareplacevolution.users (
     serviceName VARCHAR(30) NOT NULL, 
     email VARCHAR(40),
     imageUrl VARCHAR(255) DEFAULT 'https://res.cloudinary.com/cbpicstore/image/upload/v1615060643/SharePlace-Evo/default.png', 
-    aboutMe TEXT, 
+    aboutMe TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci, 
     isMod BOOLEAN DEFAULT 0, 
     date_logout DATETIME, 
     PRIMARY KEY (id) 
 )
-ENGINE=INNODB DEFAULT CHARSET=utf8;
+ENGINE=INNODB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS shareplacevolution.publications ( 
     id INT UNSIGNED NOT NULL AUTO_INCREMENT, 
     userId VARCHAR(60) NOT NULL, 
     date_publication DATETIME NOT NULL, 
     title VARCHAR(60) NOT NULL, 
-    content TEXT NOT NULL, 
+    content TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL, 
     numberComments INT DEFAULT 0, 
     likes INT DEFAULT 0, 
     userName VARCHAR(40) NOT NULL, 
@@ -33,20 +33,20 @@ CREATE TABLE IF NOT EXISTS shareplacevolution.publications (
     viewed BOOLEAN DEFAULT 1, 
     PRIMARY KEY (id) 
 )
-ENGINE=INNODB DEFAULT CHARSET=utf8;
+ENGINE=INNODB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS shareplacevolution.comments ( 
     id INT UNSIGNED NOT NULL AUTO_INCREMENT, 
     userId VARCHAR(60) NOT NULL, 
     postId INT NOT NULL, 
     date_comment DATETIME NOT NULL, 
-    content TEXT NOT NULL, 
+    content TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL, 
     userName VARCHAR(40) NOT NULL, 
     modified BOOLEAN DEFAULT 0, 
     date_modif DATETIME, 
     moderated BOOLEAN DEFAULT 0, 
     PRIMARY KEY (id) 
-)ENGINE=INNODB DEFAULT CHARSET=utf8;
+)ENGINE=INNODB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 INSERT INTO `shareplacevolution`.`users` (`id`, `userId`, `userName`, `userPassword`, `firstname`, `lastname`, `serviceName`, `email`, `aboutMe`, `isMod`) VALUES ("1", "8a56jhr2-a2d1-4052-9e51-c456gh3e6785", "Mr Malok", "$2b$10$FIrRIAzwqpREWdo7a2AR1.2IrAypp2Kx4y/zQ6N7YQad9hFxRyqPO", "Jean", "Martin", "comptabilité", "j.martin@gmail.com", "Et voilà du texte", "0");
 INSERT INTO `shareplacevolution`.`users` (`id`, `userId`, `userName`, `userPassword`, `firstname`, `lastname`, `serviceName`, `email`, `aboutMe`, `isMod`) VALUES ("2", "8a56jhr2-a2d1-4052-9e51-c17bsug8r3hi", "Daphidoo", "$2b$10$0cXdu.5nSbZRUdHyf.FEE.blxYhkd3pv9oaUNvhari9usLS.h9Wny", "Daphné", "Scoubi", "RH", "mystery.machine@gmail.com", "", "0");

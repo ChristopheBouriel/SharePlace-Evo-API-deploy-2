@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const path = require('path');
-//const cors = require('cors');
+const cors = require('cors');
 
 const multer = require('./middleware/multer-config');
 
@@ -15,7 +15,7 @@ const moderateRoutes = require('./routes/moderate');
 const app = express();
 
 app.use(helmet());
-//app.use(cors());
+app.use(cors());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

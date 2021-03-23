@@ -13,5 +13,6 @@ router.post('/add', accessCheck.postLimiter, auth, publicationValidator, publica
 router.put('/modify', accessCheck.postLimiter, auth, publicationValidator, publicationCtrl.modifyPost);
 router.post('/delete', accessCheck.postLimiter, auth, publicationCtrl.deletePost);
 router.put('/read', accessCheck.seeLimiter, auth, publicationCtrl.markAsRead);
+router.put('/like', accessCheck.likeLimiter, auth, publicationCtrl.likePost);
 
 module.exports = router;

@@ -53,3 +53,10 @@ exports.logOutLimiter = rateLimit({
     max: 20,
     message: "Too many attempts"
 })
+
+exports.likeLimiter = rateLimit({
+    windowMs: 3 * 60 * 60 * 1000,
+    max: 200,
+    message: "Too many attempts"
+})
+

@@ -9,7 +9,7 @@ exports.getAllPublications = (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.DB_TOK);
   const checkUserId = decodedToken.userId;
   if (checkUserId) {    
-    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likes, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName ORDER BY date_publication DESC`, (error, result) => {
+    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likeUsernames, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName ORDER BY date_publication DESC`, (error, result) => {
       if(error) {res.status(500).send(error.sqlMessage)}
       else {
         res.status(200).send(result);                                        
@@ -25,7 +25,7 @@ exports.getOnePublication = (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.DB_TOK);
   const checkUserId = decodedToken.userId;
   if (checkUserId) {
-    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likes, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, publications.viewed, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName WHERE publications.id = ?`, [req.params.id], (error, result) => {
+    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likeUsernames, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, publications.viewed, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName WHERE publications.id = ?`, [req.params.id], (error, result) => {
       if(error) {res.status(500).send(error.sqlMessage)}
       else {
         res.status(200).send(result);                                  
@@ -55,9 +55,9 @@ exports.addPublication = (req, res, next) => {
           const userName = xssFilters.inHTMLData(req.body.userName);
           const content = xssFilters.inHTMLData(req.body.content.replace(/\"/gi,'&µ'));
           const date_publication = xssFilters.inHTMLData(req.body.date_publication);
-
-          connexion.query(`INSERT INTO publications (userId, title, userName, content, date_publication) VALUES (?,?,?,?,?)`, 
-            [userId, title, userName, content, date_publication], (error, result)=>{
+          const likeUsernames = "[]";
+          connexion.query(`INSERT INTO publications (userId, title, userName, content, date_publication, likeUsernames) VALUES (?,?,?,?,?,?)`, 
+            [userId, title, userName, content, date_publication, likeUsernames], (error, result)=>{
                 if(error) {res.status(500).send(error.sqlMessage)}
                 else {res.status(201).send({message:"Publication added"})}          
           })
@@ -100,6 +100,23 @@ exports.deletePost = (req, res, next) => {
         })  
     } else {res.status(401).send({message:"Attention"})}
   })  
+};
+
+exports.likePost = (req, res, next) => {
+  const like = req.body.like;
+  const putUserName = req.body.userName;
+  if (like === 1) {
+    connexion.query(`UPDATE publications SET likeUsernames=JSON_ARRAY_APPEND(likeUsernames, '$', '${putUserName}') WHERE id = ?`, [req.body.postId], (error, result) => {
+      if(error) {res.status(500).send(error.sqlMessage)}
+      else {res.status(200).send({liked:true})}
+    }) 
+  } else {
+    connexion.query(`UPDATE publications SET likeUsernames=JSON_REMOVE(likeUsernames, JSON_UNQUOTE(JSON_SEARCH(likeUsernames, 'one', '${putUserName}'))) WHERE id = ?`, [req.body.postId], (error, result) => {
+      if(error) {res.status(500).send(error.sqlMessage)}
+      else {res.status(200).send({liked:false})}
+    })
+  }
+   
 };
 
 

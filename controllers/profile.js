@@ -18,7 +18,7 @@ exports.seeProfile = (req, res, next) => {
       const checkUserId = decodedToken.userId;
       if (checkUserId) {
         const userInfos = result;
-        connexion.query(`SELECT id, date_publication, title, content, likeUsernames, numberComments, userName, modified, date_modif, moderated FROM publications WHERE userName = ?`, [req.params.userName], (error, result)=>{
+        connexion.query(`SELECT id, date_publication, title, content, likeUsernames, numberComments, userName, modified, date_modif, moderated FROM publications WHERE userName = ? ORDER BY date_publication DESC`, [req.params.userName], (error, result)=>{
             if(error) {res.status(500).send(error.sqlMessage)}
             else{
               const response = {userInfos, result}; 

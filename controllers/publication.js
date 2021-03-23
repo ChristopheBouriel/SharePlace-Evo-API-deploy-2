@@ -9,7 +9,7 @@ exports.getAllPublications = (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.DB_TOK);
   const checkUserId = decodedToken.userId;
   if (checkUserId) {    
-    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likeUsernames, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName ORDER BY date_publication DESC`, (error, result) => {
+    connexion.query(`SELECT publications.id, publications.date_publication, publications.title, publications.content, publications.likeUsernames, publications.numberComments, publications.userName, publications.modified, publications.date_modif, publications.moderated, users.imageUrl FROM publications INNER JOIN users ON publications.userName = users.userName ORDER BY publications.date_publication DESC`, (error, result) => {
       if(error) {res.status(500).send(error.sqlMessage)}
       else {
         res.status(200).send(result);                                        

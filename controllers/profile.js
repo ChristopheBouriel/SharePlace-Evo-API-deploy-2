@@ -1,8 +1,6 @@
 const connexion = require('../dataBaseAccess');
 const xssFilters = require('xss-filters');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-
 
 const cloudinary = require("../middleware/cloudinary");
 const multer = require("../middleware/multer-config");
@@ -73,7 +71,6 @@ exports.getNotifications = (req, res, next) => {
 exports.loadPicture = (req, res, next) => {  
   multer.single("image") (req, res, () => {
     auth (req, res, async () => {
-    console.log(req.body.datas)
     picObject = { ...JSON.parse(req.body.datas) };
     const userName =  picObject.userName;
     
